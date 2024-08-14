@@ -79,13 +79,13 @@ api = Api(app)
 
 OZON_keys = {
             'OZON-AIR-260': {
-              "clientId": "a67f70f2-0cc8-4cbf-9385-1dfd0f52c055",
-              "clientSecret": "jNKpOzYdJHAk",
+              "clientId": "78d96cd9-909c-4e17-ac73-1b6669cbbd43",
+              "clientSecret": "fyfJmgyftyYB",
               "providerId": 260,
             },
             'OZON-LAND-862': {
-              "clientId": "0e29ef29-b617-4b53-a2aa-f7d1110724e0",
-              "clientSecret": "gJHFVyoYWDYs",
+              "clientId": "58d65bb4-f7c5-4605-885f-6a9c54e4df7c",
+              "clientSecret": "tMgBeETAXMJy",
               "providerId": 862,
             },
             'OZON-AIR-963': {
@@ -109,24 +109,29 @@ OZON_keys = {
               "providerId": 995,
             },
             'OZON-LAND-1045': {
-              "clientId": "7a7de1ee-6d7b-4b76-b6c1-3c5d58234fe6",
-              "clientSecret": "sdPiTZQiihAE",
+              "clientId": "13be002c-c54d-447c-9a25-396cabc6e1b1",
+              "clientSecret": "XKAMTEKMQftH",
               "providerId": 1045,
             },
             'FBP-AIR-1102': {
-              "clientId": "8b735bb4-5c04-4d88-933c-f5533c92c2ad",
-              "clientSecret": "tylkJcNWGdAN",
+              "clientId": "04904a46-4c9f-4f7e-b2e9-019917d491de",
+              "clientSecret": "YyBnRTMQaahK",
               "providerId": 1102,
             },
             '7D-AIR-987': {
-              "clientId": "8aa3d080-44fd-4c27-a3b0-a03c9a7f4915",
-              "clientSecret": "LOeQglJfuFlv",
+              "clientId": "ffa8c005-4f91-4a47-b2cf-6db0fe9ee97c",
+              "clientSecret": "emtyBaeJtgKX",
               "providerId": 987,
             },
             '7D-LAND-1068': {
-              "clientId": "b6714212-3f52-4acc-afb9-20906377108d",
-              "clientSecret": "hFSsRpCpqxek",
+              "clientId": "10d0ceaa-267b-4e46-a464-be6074c9c6fd",
+              "clientSecret": "GTmnYatEXhJE",
               "providerId": 1068,
+            },
+            'FBP-LAND-1108': {
+              "clientId": "a129b657-2ba4-4ea6-9fa5-704a9b30937c",
+              "clientSecret": "gLhAeXLahtYL",
+              "providerId": 1108,
             },
             '7D-LAND-1110': {
               "clientId": "2d3bf6b8-9f26-493a-a4d6-48e853405cd6",
