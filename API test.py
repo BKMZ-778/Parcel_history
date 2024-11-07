@@ -1,4 +1,6 @@
+import base64
 import hashlib
+import smtplib, ssl
 from tkinter import filedialog
 import time
 import openpyxl
@@ -422,8 +424,8 @@ def send_customs_pay_info():
     print(response.text)
 
 
-client_id_agreg = 'a67f70f2-0cc8-4cbf-9385-1dfd0f52c055'
-client_secret_agreg = 'jNKpOzYdJHAk'
+client_id_agreg = '78d96cd9-909c-4e17-ac73-1b6669cbbd43'
+client_secret_agreg = 'fyfJmgyftyYB'
 
 client_id = 'a67f70f2-0cc8-4cbf-9385-1dfd0f52c055'
 client_secret = 'jNKpOzYdJHAk'
@@ -459,58 +461,76 @@ def get_token_agreg(client_id_agreg, client_secret_agreg):
 
 
 def ozon_send_customs_pay_info():
+    # Таможенный портал
+    client_id_agreg = 'ddd0762f-ec85-4ab5-9974-4fef92af541b'
+    client_secret_agreg = 'KyhgEttYXnYa'
     token = json.loads(get_token_agreg(client_id_agreg, client_secret_agreg))
     token = token["Data"]
     print(token)
     headers = {'Authorization': f'Bearer {token}'}
-    url = 'https://api-logistic-platform.ozonru.me/v1/TaxReport'
-    body = {
-        "TaxReports": [
-                    {
-                      "PostingNumber": "0251969948-0001-1",
-                      "TrackingNumber": "HC000013517CD",
-                      "TaxPayment": 2013.32,
-                      "CustomsDuty": 500,
-                      "Total": 2513.32,
-                      "Currency": "RUB",
-                      "InvoiceNumber": "211cb049-d6c0-414a-b504-af618629819d",
-                      "DateOfPayment": "2024-07-25T11:47:34.822Z",
-                      "RegisterNumber": "10716050/220724/П498487"
+    url = 'http://164.132.182.145:5000/api/add/pay_customs_info'
+    file_name = filedialog.askopenfilename()
+    df = pd.read_excel(file_name)
+    print(df)
+    for index, item in df.iterrows():
+        PostingNumber = item['Номер отправления']
+        TrackingNumber = item['Трек-номер']
+        TaxPayment = item['Таможенная пошлина']
+        Total = item['Сумма сборов и пошлины']
+        InvoiceNumber = item['invoice']
+        DateOfPayment = item['дата']
+        RegisterNumber = item['Рег. номер']
+        provider = item['provider']
+        body = {
+            "TaxReports": [
+                        {
+                          "PostingNumber": PostingNumber,
+                          "TrackingNumber": TrackingNumber,
+                          "TaxPayment": TaxPayment,
+                          "CustomsDuty": 500,
+                          "Total": Total,
+                          "Currency": "RUB",
+                          "InvoiceNumber": InvoiceNumber,
+                          "DateOfPayment": DateOfPayment,
+                          "RegisterNumber": RegisterNumber,
+                            "Provider": provider
+                        }
+                      ]
                     }
-                  ]
-                }
+
+        print(body)
+        response = requests.post(url=url, json=body,
+                                 headers=headers)
+        print(response.text)
+        print(response.status_code)
 
 
-    response = requests.post(url=url, json=body,
-                             headers=headers)
-    print(response.text)
-    print(response.status_code)
+#ozon_send_customs_pay_info()
 
 
 def send_pay_customs_info():
+    file_name = filedialog.askopenfilename()
+    df = pd.read_excel(file_name, usecols='B')
+    print(df)
+    for index, item in df.iterrows():
+        print(item['json'])
+        json_pay = item['json'].replace("\'", "\"")
+        json_pay = json.loads(json_pay)
+        url = 'http://164.132.182.145:5000/api/add/pay_customs_info'
 
-    url = 'http://164.132.182.145:5000/api/add/pay_customs_info'
-
-    body = {
+        body = {
         "TaxReports": [
-            {
-                "PostingNumber": "0251969948-0001-1",
-                "TrackingNumber": "HC000013517CD",
-                "TaxPayment": 2013.32,
-                "CustomsDuty": 500,
-                "Total": 2513.32,
-                "Currency": "RUB",
-                "InvoiceNumber": "211cb049-d6c0-414a-b504-af618629819d",
-                "DateOfPayment": "2024-07-25T11:47:34.822Z",
-                "RegisterNumber": "10716050/220724/П498487",
-                "provider": "OZON-AIR-260"
+        json_pay
+            ]
             }
-        ]
-    }
 
-    response = requests.post(url=url, json=body)
-    print(response.text)
-    print(response.status_code)
+        print(body)
+
+        response = requests.post(url=url, json=json_pay)
+        print(response.text)
+        print(response.status_code)
+
+send_pay_customs_info()
 
 
 def get_goods_info():
@@ -536,7 +556,88 @@ def get_goods_info():
     df_result.to_excel(writer, sheet_name='Sheet1', index=False)
     writer.close()
 
-get_goods_info()
+
+def decod_xml_to_base64():
+    # convert file content to base64 encoded string
+    with open("216b8252-2eb1-4b0a-82a4-37178c17be5f.xml", "rb") as file:
+        raw_file = file.read()
+        print(raw_file)
+        encoded = base64.encodebytes(raw_file).decode("utf-8")
+
+
+    # output base64 content
+    #print(encoded)
+
+
+    #print(encoded)
+    return encoded
+
+def send_base64_ozon():
+    encoded = decod_xml_to_base64()
+    # token = json.loads(get_token_agreg(client_id_agreg, client_secret_agreg))
+    # token = token["Data"]
+    # #print(token)
+    # headers = {'Authorization': f'Bearer {token}'}
+    url = 'http://164.132.182.145:5000/api/TaxDocuments' # 'https://api-logistic-platform.ozon.ru/v1/TaxDocuments'
+
+    #print(encoded)
+    body_json = {'documentType': 'Cmn',
+            'documentData': encoded}
+    #body_json = json.dumps(body)
+    #print(body)
+    with open('json_xml.json', 'w', encoding='UTF-8') as fp:
+        json.dump(body_json, fp, ensure_ascii=False)
+    response = requests.post(url=url, json=body_json)
+    print(body_json)
+    print(response.status_code)
+    print(response.text)
+
+#send_base64_ozon()
+
+def get_parcel_info_list():
+    url = 'http://164.132.182.145:5000/todo/events/list_api'
+    body_json = ['CEL1000474095CD']
+    response = requests.post(url=url, json=body_json)
+    print(response.status_code)
+    print(response.text)
+
+
+username = "cel-python-automatization@yandex.ru"
+password = "vmpqeopkfptvejiz"
+
+
+def send_email(body_text, subject):
+    context = ssl.create_default_context()
+    from_addr = 'cel-python-automatization@yandex.ru'
+
+    to_addr = ["transpriemka@mail.ru"]  # must be a list
+
+    # Prepare actual message
+    message = "\r\n".join((
+        "From: %s" % from_addr,
+        "To: %s" % to_addr,
+        "Subject: %s" % subject,
+        "",
+        body_text
+    ))
+
+    with smtplib.SMTP_SSL("smtp.yandex.com", context=context) as server:
+        server.login(username, password)
+        server.sendmail(username, ["transpriemka@mail.ru"], message)
+        server.quit()
+        print('ok')
+
+
+#send_email()
+
+
+#get_parcel_info_list()
+
+#send_base64_ozon()
+
+
+
+#get_goods_info()
 
 
 #send_pay_customs_info()

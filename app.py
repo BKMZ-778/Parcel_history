@@ -1,5 +1,7 @@
+import ssl
 from calendar import monthrange
 
+import xlsxwriter
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 from flask import abort
 import pandas as pd
@@ -38,7 +40,7 @@ from flask_restful import Resource,  Api
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token, jwt_required
 #from flask_cors import CORS
-from flask import make_response
+from flask import make_response, send_file
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     create_refresh_token,
@@ -49,6 +51,7 @@ import base64
 from base64 import b64encode
 import hashlib
 import json
+import smtplib
 
 bot = telebot.TeleBot('5555513345:AAFzGfbHd4rUzLHh2m4q5kWEFtp7IUx_UNU')
 rarfile.UNRAR_TOOL = r'C:/Program Files/WinRAR/UnRAR.exe'
@@ -89,13 +92,13 @@ OZON_keys = {
               "providerId": 862,
             },
             'OZON-AIR-963': {
-              "clientId": "0b8b2b26-7dae-46ec-ae44-64ad13917aa0",
-              "clientSecret": "lTtIhrmFPQez",
+              "clientId": "39cbcb39-ccbe-415c-8ab7-bfb9ff41c9d7",
+              "clientSecret": "OuYihXlWHZaQ",
               "providerId": 963,
             },
             'OZON-LAND-964': {
-              "clientId": "cdeda496-1770-47da-8e59-0a83462030fb",
-              "clientSecret": "mihDKriXwrvz",
+              "clientId": "a31f2584-94b7-48ac-bf9f-72a526fc4947",
+              "clientSecret": "DeEbfGsSdnRd",
               "providerId": 964,
             },
             'OZON-LAND-989': {
@@ -133,6 +136,11 @@ OZON_keys = {
               "clientSecret": "gLhAeXLahtYL",
               "providerId": 1108,
             },
+            'FBP-AIR-1108': {
+                "clientId": "a129b657-2ba4-4ea6-9fa5-704a9b30937c",
+                "clientSecret": "gLhAeXLahtYL",
+                "providerId": 1108,
+            },
             '7D-LAND-1110': {
               "clientId": "2d3bf6b8-9f26-493a-a4d6-48e853405cd6",
               "clientSecret": "MYrevesoOyRE",
@@ -142,9 +150,102 @@ OZON_keys = {
               "clientId": "86b43b9f-3dfb-41b5-96b6-19792f08ff90",
               "clientSecret": "tntwpAModoSt",
               "providerId": 1111,
-            }
+            },
+            'OZON-AIR-1160': {
+              "clientId": "a813ba8f-d607-4e68-83f5-a2ca76e75f88",
+              "clientSecret": "uhLvfyDyuzDY",
+              "providerId": 1160,
+            },
+            'OZON-AIR-1163': {
+              "clientId": "7a68022c-5701-4a95-a210-3451beb85cf2",
+              "clientSecret": "YyZFgSKfXaQV",
+              "providerId": 1163,
+            },
+            'OZON-AIR-1164': {
+              "clientId": "c9733e62-1df2-44a6-8540-4bab89ee6876",
+              "clientSecret": "ZZJwkxWVDVpW",
+              "providerId": 1164,
+            },
+            'OZON-LAND-1165': {
+              "clientId": "fa4f1d2d-4522-4b85-bc52-da1b1b55b9f7",
+              "clientSecret": "TEKuTubKYmaQ",
+              "providerId": 1165,
+            },
+            'OZON-AIR-1166': {
+              "clientId": "1e807247-7aa2-41d6-873e-c186b8386cc9",
+              "clientSecret": "GFJvMyPQZauR",
+              "providerId": 1166,
+            },
+            'OZON-AIR-1167': {
+              "clientId": "1c1cee8a-46c3-4d04-b432-bbcf8fb4b938",
+              "clientSecret": "ymUJGMwmvFcy",
+              "providerId": 1167,
+            },
+            'OZON-LAND-1168': {
+              "clientId": "062e6800-e66c-4fa2-90f5-8dcbcdde6992",
+              "clientSecret": "LLthZcDtnFRZ",
+              "providerId": 1168,
+            },
+            'OZON-AIR-1169': {
+              "clientId": "89e7ad9e-ddd5-4e5d-9da1-cfb84e2f79e9",
+              "clientSecret": "vWYNbWjzQdUJ",
+              "providerId": 1169,
+            },
+            'OZON-AIR-1170': {
+              "clientId": "ede0d39d-8b39-49a7-b581-91d1f9f3d4c0",
+              "clientSecret": "mThSncRxCFFb",
+              "providerId": 1170,
+            },
+            'OZON-LAND-1171': {
+              "clientId": "bec77a1f-93bd-4895-9794-006b7e2a0783",
+              "clientSecret": "QmxjpMfxJkFf",
+              "providerId": 1171,
+            },
+            'OZON-AIR-1172': {
+              "clientId": "1571707c-faf3-4704-9d45-37102775c088",
+              "clientSecret": "RYCurLxxvukg",
+              "providerId": 1172,
+            },
+            'OZON-AIR-1173': {
+              "clientId": "33fd83a0-8db3-4e7f-b130-5b16865fad56",
+              "clientSecret": "UUArrJCmCYYC",
+              "providerId": 1173,
+            },
+            'OZON-LAND-1174': {
+              "clientId": "14356255-28e8-4ea1-bd63-a60e292ea90a",
+              "clientSecret": "zEednHwsQehX",
+              "providerId": 1174,
+            },
+            'OZON-AIR-1175': {
+              "clientId": "74bd8449-a3cb-4aa5-9725-5047305b7c07",
+              "clientSecret": "UycNZFQQkTRG",
+              "providerId": 1175,
+            },
+            'OZON-AIR-1176': {
+              "clientId": "1c1c74c8-dd53-4597-8158-ffc2c3948815",
+              "clientSecret": "QPxLFkbNyPTg",
+              "providerId": 1176,
+            },
+            'OZON-LAND-1177': {
+              "clientId": "063a27c7-2ff2-4302-ac65-d27da5635b67",
+              "clientSecret": "TTGnLHyuxghQ",
+              "providerId": 1177,
+            },
+            'FBP-LAND-1178': {
+              "clientId": "4ce9623d-cfc7-4cf4-9b1f-3dacbef4f69c",
+              "clientSecret": "DRYfKNhbuTXK",
+              "providerId": 1178,
+            },
+            '7D-AIR-1209': {
+              "clientId": "500477ef-1e92-43e8-972f-4d0ce690774b",
+              "clientSecret": "DyxMsxTpAcgk",
+              "providerId": 1209,
             }
 
+            }
+
+client_id_agreg = '78d96cd9-909c-4e17-ac73-1b6669cbbd43'
+client_secret_agreg = 'fyfJmgyftyYB'
 
 class UserLogin(Resource):
     def post(self):
@@ -203,6 +304,11 @@ logger_API_get_info = setup_logger('logger_API_get_info', 'API_info.log')
 logger_API_chunks = setup_logger('logger_API_chunks', 'logger_API_chunks.log')
 
 logger_customs_pay = setup_logger('logger_customs_pay', 'logger_customs_pay.log')
+logger_customs_paya_all = setup_logger('customs_paya_all', 'customs_paya_all.log')
+
+logger_tax_documents = setup_logger('logger_tax_documents', 'logger_tax_documents.log')
+
+logger_pay_errors = setup_logger('logger_pay_errors', 'logger_pay_errors.log')
 
 con_gps = sl.connect("GPS.db")
 with con_gps:
@@ -219,6 +325,72 @@ with con_gps:
                                                                             );
                                                                             """)
 
+
+con_pay = sl.connect("Pay.db")
+with con_pay:
+    data = con_pay.execute("select count(*) from sqlite_master where type='table' and name='pay_customs'")
+    for row in data:
+        # если таких таблиц нет
+        if row[0] == 0:
+            # создаём таблицу
+            con_pay.execute("""
+                                                                            CREATE TABLE pay_customs (
+                                                                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                                            PostingNumber VARCHAR(25) NOT NULL,
+                                                                            TrackingNumber VARCHAR(25) NOT NULL,
+                                                                            TaxPayment FLOAT,
+                                                                            CustomsDuty FLOAT,
+                                                                            Total FLOAT,
+                                                                            InvoiceNumber VARCHAR(50),
+                                                                            RegisterNumber VARCHAR(25),
+                                                                            Currency VARCHAR(3),
+                                                                            DateOfPayment,
+                                                                            Provider,
+                                                                            send_time,
+                                                                            json_info,
+                                                                            ozone_response_status_code,
+                                                                            ozone_response_text
+                                                                            );
+                                                                            """)
+
+with con_pay:
+    data = con_pay.execute("select count(*) from sqlite_master where type='table' and name='cel_tokens'")
+    for row in data:
+        # если таких таблиц нет
+        if row[0] == 0:
+            # создаём таблицу
+            con_pay.execute("""
+                                                                            CREATE TABLE cel_tokens (
+                                                                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                                            provider VARCHAR,
+                                                                            token VARCHAR,
+                                                                            updateTime VARCHAR
+
+                                                                            );
+                                                                            """)
+
+def send_email(body_text, subject):
+    username = "cel-python-automatization@yandex.ru"
+    password = "vmpqeopkfptvejiz"
+    context = ssl.create_default_context()
+    from_addr = 'cel-python-automatization@yandex.ru'
+
+    to_addr = ["transpriemka@mail.ru"]  # must be a list
+
+    # Prepare actual message
+    message = "\r\n".join((
+        "From: %s" % from_addr,
+        "To: %s" % to_addr,
+        "Subject: %s" % subject,
+        "",
+        body_text
+    ))
+
+    with smtplib.SMTP_SSL("smtp.yandex.com", context=context) as server:
+        server.login(username, password)
+        server.sendmail(username, ["transpriemka@mail.ru"], message)
+        server.quit()
+        print('ok')
 
 def api_track718_add_track(gps_numb):
     cel_api_key = "e0fca820-c3dc-11ee-b960-bdfb353c94dc"
@@ -684,7 +856,19 @@ map_includs_eng_to_rus = {'parcel_numb': 'Номер накладной', 'secon
                   'INN': 'ИНН', 'goods_weight': 'Вес товара', 'manifest_numb': 'Номер партии', 'manifest_date': 'Дата партии'}
 
 
-json = {'name': 'test', 'email': 'test@gmail.com', 'password': '12345'}
+json_1 = {'name': 'test', 'email': 'test@gmail.com', 'password': '12345'}
+
+
+@app.route('/export/<string:file_name>', methods=['POST', 'GET'])
+def export_excel(file_name):
+    now = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+    #file_name = request.form['file_name']
+    df = pd.read_excel(f'{file_name}.xlsx')
+    # Create a new workbook and add a worksheet
+    df.to_excel(f'{file_name} от {now}.xlsx', index=False)
+
+    # Return the Excel file to the client
+    return send_file(f'{file_name}.xlsx', as_attachment=True)
 
 def get_db_connection():
     conn = sl.connect('CEL.db')
@@ -937,11 +1121,8 @@ def Django_send_status(parcel_numb, custom_status, refuse_reason, decision_date)
     print(response.json())
 
 
-def svh_server_send_status(parcel_numb, custom_status, custom_status_short, refuse_reason, decision_date, regnumber):
-    url = 'http://127.0.0.1:5001/api_insert_decisions/'
-    decision_date = datetime.datetime.strftime(decision_date, "%Y-%m-%d %H:%M:%S")
-    body = {'registration_numb': regnumber, 'parcel_numb': parcel_numb, 'decision_date': decision_date,
-            'custom_status': custom_status, 'custom_status_short': custom_status_short, 'place': '', 'refuse_reason': refuse_reason}
+def svh_server_send_status(body):
+    url = 'http://127.0.0.1:5001/api_insert_decisions_chunk/'
     print(body)
     response = requests.post(url, json=body)
     print(response.status_code)
@@ -1072,6 +1253,7 @@ def insert_event_API_chunks2():
         print(event_details)
         parcels_list = []
         data_list = []
+        body = []
         for parcel in event_details:
             regnumber = parcel["regnumber"]
             parcel_numb = parcel["parcel_numb"]
@@ -1091,10 +1273,13 @@ def insert_event_API_chunks2():
                 custom_status_short = 'ИЗЪЯТИЕ'
             #update_decision_API(regnumber, parcel_numb, custom_status, custom_status_short, refuse_reason, decision_date)
             parcels_list.append(parcel_numb)
-            #svh_server_send_status(parcel_numb, custom_status, custom_status_short, refuse_reason, decision_date,
-            #                       regnumber)
             data = tochina_prepare(parcel_numb, custom_status, refuse_reason, Event_date_chin)
             data_list.append(data)
+            decision_date = datetime.datetime.strftime(decision_date, "%Y-%m-%d %H:%M:%S")
+            for_svh_serv_data = {'registration_numb': regnumber, 'parcel_numb': parcel_numb, 'decision_date': decision_date,
+            'custom_status': custom_status, 'custom_status_short': custom_status_short, 'place': '', 'refuse_reason': refuse_reason}
+            body.append(for_svh_serv_data)
+        svh_server_send_status(body)
         logger_API_chunks.info(f'{now} insert_event_API_chunks2: {str(parcels_list)}')
         print(data_list)
         send_to_china(data_list)
@@ -1105,58 +1290,114 @@ def insert_event_API_chunks2():
         return jsonify(f'insert_event_API_chunks2 faled: {traceback.print_exc()}')
 
 
+
+def get_token_agreg(client_id_agreg, client_secret_agreg):
+    url = 'https://api-logistic-platform.ozon.ru/GetAuthToken'
+    headers = {'content-type': 'application/json'}
+    data = {
+    "ClientId": client_id_agreg,
+    "ClientSecret": client_secret_agreg
+    }
+    response = requests.post(url=url, json=data, headers=headers)
+    token = response.text
+    return token
+
+
+def pars_and_send_pay(TrackingNumber, parcel, token, url, provider, event_details):
+    PostingNumber = parcel['PostingNumber']
+    TaxPayment = parcel['TaxPayment']
+    CustomsDuty = parcel['CustomsDuty']
+    Total = parcel['Total']
+    Currency = parcel['Currency']
+    InvoiceNumber = parcel['InvoiceNumber']
+    DateOfPayment = parcel['DateOfPayment']
+    RegisterNumber = parcel['RegisterNumber']
+
+    body = {'TaxReports':
+                [{'PostingNumber': PostingNumber,
+                  'TrackingNumber': TrackingNumber,
+                  'TaxPayment': TaxPayment,
+                  'CustomsDuty': CustomsDuty,
+                  'Total': Total,
+                  'Currency': Currency,
+                  'InvoiceNumber': InvoiceNumber,
+                  'DateOfPayment': DateOfPayment,
+                  'RegisterNumber': RegisterNumber
+                  }]}
+    headers = {'Authorization': f'Bearer {token}'}
+    response = requests.post(url=url, json=body,
+                             headers=headers)
+    status_code = response.status_code
+    print(status_code)
+    print(response.text)
+    ozone_response_text = response.text
+    with con_pay:
+        print('start insertion')
+        query = """INSERT INTO pay_customs (PostingNumber, TrackingNumber, TaxPayment, CustomsDuty, 
+                            Total, InvoiceNumber, RegisterNumber, Currency, DateOfPayment, Provider, send_time, json_info, 
+                            ozone_response_status_code, ozone_response_text)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+        con_pay.execute(query, [PostingNumber, TrackingNumber, TaxPayment, CustomsDuty,
+                                Total, InvoiceNumber, RegisterNumber, Currency, DateOfPayment,
+                                provider, now, str(event_details), status_code, ozone_response_text])
+        print('insert ok')
+    return body, response, status_code
 @app.route('/api/add/pay_customs_info', methods=['POST'])
 def pay_customs_info():
+    con_pay = sl.connect('Pay.db')
     now = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+    url = 'https://api-logistic-platform.ozon.ru/v1/TaxReport'
     try:
         event_details = request.get_json()
 
         print(event_details)
-        logger_customs_pay.info(f'{now} pay_customs_info : {event_details}')
+        logger_customs_paya_all.info(f'{now} pay_customs_info : {event_details}')
         parcels = event_details['TaxReports']
         for parcel in parcels:
             TrackingNumber = parcel['TrackingNumber']
-            provider = parcel['provider']
+            provider = parcel['Provider']
             if provider is not None:
                 try:
-                    clientId = OZON_keys[provider]['clientId']
-                    clientSecret = OZON_keys[provider]['clientSecret']
-                    PostingNumber = parcel['PostingNumber']
-                    TaxPayment = parcel['TaxPayment']
-                    CustomsDuty = parcel['CustomsDuty']
-                    Total =parcel['Total']
-                    Currency = parcel['Currency']
-                    InvoiceNumber = parcel['InvoiceNumber']
-                    DateOfPayment = parcel['DateOfPayment']
-                    RegisterNumber = parcel['RegisterNumber']
-
-                    body = {'TaxReports':
-                            [{'PostingNumber': PostingNumber,
-                              'TrackingNumber': TrackingNumber,
-                              'TaxPayment': TaxPayment,
-                              'CustomsDuty': CustomsDuty,
-                              'Total': Total,
-                              'Currency': Currency,
-                              'InvoiceNumber': InvoiceNumber,
-                              'DateOfPayment': DateOfPayment,
-                              'RegisterNumber': RegisterNumber
-                              }]}
-
-                    logger_customs_pay.info(f'{now, provider, body}')
-                    print(f'{now, provider, body}')
-                    return jsonify("ok")
-                except:
-                    error_info = f'{now}pay_customs_info faled: {parcel} {traceback.print_exc()}'
-                    logger_customs_pay.info(error_info)
-                    return jsonify(error_info)
+                    token = ''
+                    body, response, status_code = pars_and_send_pay(TrackingNumber, parcel, token, url, provider, event_details)
+                    if status_code == 200:
+                        logger_customs_pay.info(f'{now, provider, response.text}')
+                        print(f'{now, provider, body}')
+                    elif status_code == 401:
+                        client_id_agreg = OZON_keys[provider]['clientId']
+                        client_secret_agreg = OZON_keys[provider]['clientSecret']
+                        token = json.loads(get_token_agreg(client_id_agreg, client_secret_agreg))
+                        token = token["Data"]
+                        with con_pay:
+                            con_pay.execute(f"UPDATE cel_tokens SET token = '{token}' WHERE provider = '{provider}'")
+                        body, response, status_code = pars_and_send_pay(TrackingNumber, parcel, token, url, provider,
+                                                                        event_details)
+                        logger_customs_pay.info(f'{now, provider, response.text}')
+                        print(f'{now, provider, body}')
+                    else:
+                        error_info = f'{now} pay_customs_info_faled: {response.text}'
+                        logger_pay_errors.info(error_info)
+                except Exception as e:
+                    print(e)
+                    error_info = f'{now} pay_customs_info_faled: {TrackingNumber} {e}'
+                    logger_pay_errors.info(error_info)
+                    send_email(body_text=f'Error {error_info}', subject=f'{TrackingNumber} pay_customs error')
             else:
                 msg = 'ok'
                 logger_customs_pay.info(f'{now} provider is None, return {msg}')
-            return jsonify('ok')
+        return jsonify('ok')
     except Exception as e:
-        error_info = f'pay_customs_info faled: {traceback.print_exc()}'
-        logger_customs_pay.info(error_info)
-        return jsonify(error_info)
+        try:
+            event_details = request.get_json()
+            error_info = f'{now} pay_customs_info faled: {e} details: {event_details}'
+            logger_pay_errors.info(error_info)
+            send_email(body_text=f'{error_info} for: {event_details}', subject=f'pay_customs error')
+            return jsonify(error_info)
+        except:
+            error_info = f'{now} pay_customs_info faled: {e}'
+            logger_pay_errors.info(error_info)
+            send_email(body_text=f'{error_info}', subject=f'pay_customs error')
+            return jsonify(error_info)
 
 
 @app.route('/api/add/new_event', methods=['POST'])
@@ -1340,6 +1581,7 @@ def parc_add_manifest():
             con.close()
     return render_template('add_manifest.html', now=now)
 
+
 @app.route('/todo/events/', methods=['POST', 'GET'])
 def get_parcel_info():
     parcel_numb = request.form['parcel_numb']
@@ -1386,10 +1628,35 @@ def get_parcel_info_list():
                            titles=['na', 'Отслеживание (статусы экспресс груза)', 'Информация о посылке'],
                            parcel_numb=parcel_numb)
 
+@app.route('/todo/pay/list', methods=['POST', 'GET'])
+def get_pay_info_list():
+    parcel_numbs = request.form['parcel_numbs'].replace(' ', ',')
+    parcels_list = parcel_numbs.split(",")
+    df_all_parcels = pd.DataFrame()
+    for parcel_numb in parcels_list:
+        try:
+            con_pay = sl.connect('Pay.db')
+            with con_pay:
+                df_parc_events = pd.read_sql(f"SELECT * FROM pay_customs where TrackingNumber = '{parcel_numb}'", con_pay)
+                print(df_parc_events)
+                df_all_parcels = df_all_parcels.append(df_parc_events)
+        except Exception as e:
+            logger.exception("message")
+            logger.warning(f'parcel {parcel_numb}  - read action faild with error: {e}')
+            return {'message': str(e)}, 400
+    format_func = lambda x: x[0:30] + '...'
+    file_name = 'OzonPayInfo'
+    writer = pd.ExcelWriter(f'{file_name}.xlsx', engine='xlsxwriter')
+    df_all_parcels.to_excel(writer, sheet_name='Sheet1', index=False)
+    writer.save()
+    return render_template('parc_info.html', tables=[df_all_parcels.to_html(formatters={'json_info': format_func}, classes='mystyle', index=False)],
+                           titles=['na', '', 'Информация о посылке'],
+                           parcel_numb=parcel_numb, file_name=file_name)
 
 @app.route('/todo/events/list_api', methods=['POST', 'GET'])
 def get_parcel_info_list_api():
     parcels_list_dict = request.get_json()
+    print(parcels_list_dict)
     df = pd.DataFrame(parcels_list_dict)
     con = sl.connect('CEL.db')
     with con:
@@ -1598,6 +1865,42 @@ def check_and_backup():
         backup()
     except sl.DatabaseError:
         con.close()
+
+
+def decod_xml_to_base64(document):
+    # convert file content to base64 encoded string
+    with open(document, "rb") as file:
+        raw_file = file.read()
+        encoded = base64.encodebytes(raw_file).decode("utf-8")
+    return encoded
+
+@app.route('/api/TaxDocuments', methods=['POST'])
+def TaxDocuments():
+    try:
+        details = request.get_json()
+        logger_tax_documents.info(details)
+        document = details['documentData']
+        #encoded = decod_xml_to_base64(document)
+        token = json.loads(get_token_agreg(client_id_agreg, client_secret_agreg))
+        token = token["Data"]
+        print(token)
+        headers = {'Authorization': f'Bearer {token}'}
+        url = 'https://api-logistic-platform.ozon.ru/v1/TaxDocuments'
+
+        # print(encoded)
+        body = {'documentType': 'Cmn',
+                'documentData': document}
+        #body_json = json.dumps(body)
+        # print(body)
+        with open('json_xml.json', 'w', encoding='UTF-8') as fp:
+            json.dump(body, fp, ensure_ascii=False)
+        response = requests.post(url=url, headers=headers, json=body)
+        print(body)
+        print(response.status_code)
+        print(response.text)
+    except Exception as e:
+        logger_tax_documents.info(e)
+    return 'ok'
 
 
 
