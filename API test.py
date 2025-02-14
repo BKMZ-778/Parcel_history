@@ -18,6 +18,8 @@ import json
 
 BASE = "http://185.233.200.168:5000/"
 
+body_test = {"jsonrpc":"2.0","method":"HWB.Upload","params":{"Synch":True,"TotalWeight":439,"TotalVolume":0.0,"TotalCOD":0.0,"HWBQty":4,"ContractNumber":"8801519410","HWB":[{"OrderDate":"2024-08-21 13:59:45+00:00","HWBRefNumber":"AMLRU000000275YQ","DeclaredValue":228.0,"DeclaredCurrency":"RUB","LastMileInfo":{"Contractor":"IML last mile","ContractorICN":"1880157610"},"ServiceCode":"iec","ParcelQty":1,"SenderInfo":{"Name":"Shenzhen Dehong Supply Chain Co., Ltd.","Phone":"8615071940701","mobilePhone":"8615071940701","Email":"1156629561@qq.com","SenderAddress":{"CountryCode":"CN","City":"Dongguan","PostCode":"523721","Street":"China, Dongguan, tangxiazhenshahuyilu3hao, 3","Building":"","Company":"SHENZHEN DEHONG SUPPLY CHAIN CO., LTD."}},"ReceiverInfo":{"Name":"Кузина Дарья Александровна","Phone":"","MobilePhone":"79688261128","Email":"dakuzina@ozon.ru","PersonalData":{"FullName":"Кузина Дарья Александровна","IDIssueDate":"2018-05-05","IDNumber":"4518 563626","IdentityCardGiven":"ГУ МВД РОССИИ ПО Г.МОСКВЕ","TaxNumber":"773321667518","BirthDate":"1998-04-04","Files":[]},"ReceiverAddress":{"CountryCode":"RU","City":"Санкт-Петербург","Street":"Россия, 197229, г. Санкт-Петербург, просп. Юнтоловский, д. 51 корп. 1 стр. 1","PostCode":"197228"}},"Parcels":[{"Weight":108,"ParcelNo":1,"Items":[{"Quantity":1,"UnitValue":228.0,"Description":"Smartphone Case","DetailedDescription":"","URL":"https://www.ozon.ru/product/1664679332/","HTSCode":"","UnitWeight":150}]}],"ContractNumber":"8801519410","HWBWeight":108,"GoodsCurrency":"RUB"},{"OrderDate":"2024-08-21 13:58:31+00:00","HWBRefNumber":"AMLRU000000316YQ","DeclaredValue":228.0,"DeclaredCurrency":"RUB","LastMileInfo":{"Contractor":"IML last mile","ContractorICN":"1880157610"},"ServiceCode":"iec","ParcelQty":1,"SenderInfo":{"Name":"Shenzhen Dehong Supply Chain Co., Ltd.","Phone":"8615071940701","mobilePhone":"8615071940701","Email":"1156629561@qq.com","SenderAddress":{"CountryCode":"CN","City":"Dongguan","PostCode":"523721","Street":"China, Dongguan, tangxiazhenshahuyilu3hao, 3","Building":"","Company":"SHENZHEN DEHONG SUPPLY CHAIN CO., LTD."}},"ReceiverInfo":{"Name":"Кузина Дарья Александровна","Phone":"","MobilePhone":"79688261128","Email":"dakuzina@ozon.ru","PersonalData":{"FullName":"Кузина Дарья Александровна","IDIssueDate":"2018-05-05","IDNumber":"4518 563626","IdentityCardGiven":"ГУ МВД РОССИИ ПО Г.МОСКВЕ","TaxNumber":"773321667518","BirthDate":"1998-04-04","Files":[]},"ReceiverAddress":{"CountryCode":"RU","City":"Санкт-Петербург","Street":"Россия, 197229, г. Санкт-Петербург, просп. Юнтоловский, д. 51 корп. 1 стр. 1","PostCode":"197228"}},"Parcels":[{"Weight":123,"ParcelNo":1,"Items":[{"Quantity":1,"UnitValue":228.0,"Description":"Smartphone Case","DetailedDescription":"","URL":"https://www.ozon.ru/product/1664679332/","HTSCode":"","UnitWeight":150}]}],"ContractNumber":"8801519410","HWBWeight":123,"GoodsCurrency":"RUB"},{"OrderDate":"2024-08-21 14:00:12+00:00","HWBRefNumber":"AMLRU000000055YQ","DeclaredValue":228.0,"DeclaredCurrency":"RUB","LastMileInfo":{"Contractor":"IML last mile","ContractorICN":"1880157610"},"ServiceCode":"iec","ParcelQty":1,"SenderInfo":{"Name":"Shenzhen Dehong Supply Chain Co., Ltd.","Phone":"8615071940701","mobilePhone":"8615071940701","Email":"1156629561@qq.com","SenderAddress":{"CountryCode":"CN","City":"Dongguan","PostCode":"523721","Street":"China, Dongguan, tangxiazhenshahuyilu3hao, 3","Building":"","Company":"SHENZHEN DEHONG SUPPLY CHAIN CO., LTD."}},"ReceiverInfo":{"Name":"Кузина Дарья Александровна","Phone":"","MobilePhone":"79688261128","Email":"dakuzina@ozon.ru","PersonalData":{"FullName":"Кузина Дарья Александровна","IDIssueDate":"2018-05-05","IDNumber":"4518 563626","IdentityCardGiven":"ГУ МВД РОССИИ ПО Г.МОСКВЕ","TaxNumber":"773321667518","BirthDate":"1998-04-04","Files":[]},"ReceiverAddress":{"CountryCode":"RU","City":"Санкт-Петербург","Street":"Россия, 197229, г. Санкт-Петербург, просп. Юнтоловский, д. 51 корп. 1 стр. 1","PostCode":"197228"}},"Parcels":[{"Weight":104,"ParcelNo":1,"Items":[{"Quantity":1,"UnitValue":228.0,"Description":"Smartphone Case","DetailedDescription":"","URL":"https://www.ozon.ru/product/1664679332/","HTSCode":"","UnitWeight":150}]}],"ContractNumber":"8801519410","HWBWeight":104,"GoodsCurrency":"RUB"},{"OrderDate":"2024-08-21 13:40:27+00:00","HWBRefNumber":"AMLRU000000026YQ","DeclaredValue":228.0,"DeclaredCurrency":"RUB","LastMileInfo":{"Contractor":"IML last mile","ContractorICN":"1880157610"},"ServiceCode":"iec","ParcelQty":1,"SenderInfo":{"Name":"Shenzhen Dehong Supply Chain Co., Ltd.","Phone":"8615071940701","mobilePhone":"8615071940701","Email":"1156629561@qq.com","SenderAddress":{"CountryCode":"CN","City":"Dongguan","PostCode":"523721","Street":"China, Dongguan, tangxiazhenshahuyilu3hao, 3","Building":"","Company":"SHENZHEN DEHONG SUPPLY CHAIN CO., LTD."}},"ReceiverInfo":{"Name":"Кузина Дарья Александровна","Phone":"","MobilePhone":"79688261128","Email":"dakuzina@ozon.ru","PersonalData":{"FullName":"Кузина Дарья Александровна","IDIssueDate":"2018-05-05","IDNumber":"4518 563626","IdentityCardGiven":"ГУ МВД РОССИИ ПО Г.МОСКВЕ","TaxNumber":"773321667518","BirthDate":"1998-04-04","Files":[]},"ReceiverAddress":{"CountryCode":"RU","City":"Москва","Street":"г. Москва, наб. Пресненская, д. 10 блок C","PostCode":"123112"}},"Parcels":[{"Weight":104,"ParcelNo":1,"Items":[{"Quantity":1,"UnitValue":228.0,"Description":"Smartphone Case","DetailedDescription":"","URL":"https://www.ozon.ru/product/1664679332/","HTSCode":"","UnitWeight":150}]}],"ContractNumber":"8801519410","HWBWeight":104,"GoodsCurrency":"RUB"}]},"id":"cb0804c0-2c04-46bf-9641-e9fc82a7c68a"}
+
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
@@ -456,38 +458,39 @@ def get_token_agreg(client_id_agreg, client_secret_agreg):
     print(token)
     return token
 
-
 #get_token_agreg(client_id_agreg, client_secret_agreg)
 
-
 def ozon_send_customs_pay_info():
-    # Таможенный портал
-    client_id_agreg = 'ddd0762f-ec85-4ab5-9974-4fef92af541b'
-    client_secret_agreg = 'KyhgEttYXnYa'
-    token = json.loads(get_token_agreg(client_id_agreg, client_secret_agreg))
-    token = token["Data"]
-    print(token)
-    headers = {'Authorization': f'Bearer {token}'}
-    url = 'http://164.132.182.145:5000/api/add/pay_customs_info'
+    # # Таможенный портал
+    # client_id_agreg = 'ddd0762f-ec85-4ab5-9974-4fef92af541b'
+    # client_secret_agreg = 'KyhgEttYXnYa'
+    # token = json.loads(get_token_agreg(client_id_agreg, client_secret_agreg))
+    # token = token["Data"]
+    # print(token)
+    # headers = {'Authorization': f'Bearer {token}'}
+    url = 'http://62.109.0.39:5000/api/add/pay_customs_info'
+    #url = 'http://192.168.1.237:5000/api/add/pay_customs_info'
     file_name = filedialog.askopenfilename()
     df = pd.read_excel(file_name)
     print(df)
+    df['Дата решения'] = pd.to_datetime(df['Дата решения'], format='%d.%m.%Y %H:%M')
     for index, item in df.iterrows():
         PostingNumber = item['Номер отправления']
         TrackingNumber = item['Трек-номер']
-        TaxPayment = item['Таможенная пошлина']
-        Total = item['Сумма сборов и пошлины']
-        InvoiceNumber = item['invoice']
-        DateOfPayment = item['дата']
+        CustomsDuty = float(item['Таможенные сборы'].replace(',', '.'))
+        TaxPayment = float(item['Таможенная пошлина'].replace(',', '.'))
+        Total = float(item['Сумма сборов и пошлины'].replace(',', '.'))
+        InvoiceNumber = item['WaybillID']
+        DateOfPayment = item['Дата решения'].strftime('%Y-%m-%dT%H:%M:%S') + '+10:00'
         RegisterNumber = item['Рег. номер']
-        provider = item['provider']
+        provider = item['Примечание']
         body = {
             "TaxReports": [
                         {
                           "PostingNumber": PostingNumber,
                           "TrackingNumber": TrackingNumber,
                           "TaxPayment": TaxPayment,
-                          "CustomsDuty": 500,
+                          "CustomsDuty": CustomsDuty,
                           "Total": Total,
                           "Currency": "RUB",
                           "InvoiceNumber": InvoiceNumber,
@@ -499,13 +502,12 @@ def ozon_send_customs_pay_info():
                     }
 
         print(body)
-        response = requests.post(url=url, json=body,
-                                 headers=headers)
+        response = requests.post(url=url, json=body)
         print(response.text)
         print(response.status_code)
 
 
-#ozon_send_customs_pay_info()
+ozon_send_customs_pay_info()
 
 
 def send_pay_customs_info():
@@ -517,7 +519,7 @@ def send_pay_customs_info():
         json_pay = item['json'].replace("\'", "\"")
         json_pay = json.loads(json_pay)
         url = 'http://164.132.182.145:5000/api/add/pay_customs_info'
-
+        # url = 'http://192.168.0.104:5000/api/add/pay_customs_info'
         body = {
         "TaxReports": [
         json_pay
@@ -530,7 +532,49 @@ def send_pay_customs_info():
         print(response.text)
         print(response.status_code)
 
-send_pay_customs_info()
+
+#send_pay_customs_info()
+
+def send_pay_customs_wb():
+    url = 'https://integrations.wb.ru/rupost-marketplace/external/api/v1/customs_duties/cel/save'
+    headers = {
+        "Authorization": "Bearer mcly5djawjb3ur0070q3t6c6465x8hoy81broovyu6w2pn99xke4v5gyb9p82f6t",
+        "Content-Type": "application/json"
+    }
+
+    body = {
+            "customs_duties": [
+            {
+            "register_number": "10716050/091124/П818468",
+            "order_number": "WBCNRUCLDAJ20000BN",
+            "customs_duty": 681.58,
+            "tax_payment": 500,
+            "total": 1181.570,
+            "currency": "RUB",
+            "date_of_payment": "2024-11-10T11:55:00+10:00"
+            },
+                {
+                    "register_number": "10716050/091124/П821814",
+                    "order_number": "WBCNRUCLDAJ290009J",
+                    "customs_duty": 12400.090,
+                    "tax_payment": 500,
+                    "total": 12900.020,
+                    "currency": "RUB",
+                    "date_of_payment": "2024-11-10T11:55:00+10:00"
+                },
+
+            ]
+            }
+
+
+    print(body)
+
+    response = requests.post(url=url, json=body, headers=headers)
+    print(response.text)
+    print(response.status_code)
+
+
+#send_pay_customs_wb()
 
 
 def get_goods_info():
@@ -548,6 +592,8 @@ def get_goods_info():
 
     print(body)
     response = requests.post(url=url, headers=headers, json=body)
+    print(response.text)
+    print(response.status_code)
     result = json.loads(response.text)
     print(result)
     df_result = pd.json_normalize(result, 'products', ['trackingNumber'])
@@ -555,6 +601,9 @@ def get_goods_info():
     writer = pd.ExcelWriter('GOODS.xlsx', engine='xlsxwriter')
     df_result.to_excel(writer, sheet_name='Sheet1', index=False)
     writer.close()
+
+
+
 
 
 def decod_xml_to_base64():
@@ -628,16 +677,61 @@ def send_email(body_text, subject):
         print('ok')
 
 
+def send_scarif_json():
+    print('start')
+    with open('parcel_pay_customs_notification_202411072212.json', 'r') as file:
+        data = json.load(file)
+        for payload in data['info']:
+            print(payload['payload'])
+
+
+
+
+def login_api():
+    user_name = 'iml'
+    password = 'H3m76Opq78'
+    url = 'http://192.168.0.102:5000/todo/api/v1.0/login'
+
+    response = requests.post(url=url, json={'email': user_name, 'password': password})
+    print(response.text)
+
+
+def login_register():
+    user_name = 'iml'
+    password = 'H3m76Opq78'
+    url = 'http://192.168.0.102:5000/todo/api/v1.0/register'
+
+    response = requests.post(url=url, json={'name': 'user_name', 'email': user_name, 'password': password})
+    print(response.text)
+
+def test_request_register():
+    body = body_test
+    url = 'http://62.109.0.39:5000/api/add/register'
+
+    response = requests.post(url=url, json=body)
+    print(response.text)
+
+
+#get_goods_info()
+
+ozon_send_customs_pay_info()
+
+#test_request_register()
+
+#login_register()
+
+#login_api()
+
+
+#send_scarif_json()
+
+
 #send_email()
 
 
 #get_parcel_info_list()
 
 #send_base64_ozon()
-
-
-
-#get_goods_info()
 
 
 #send_pay_customs_info()
@@ -648,7 +742,6 @@ def send_email(body_text, subject):
 #registrate_postings()
 
 
-#ozon_send_customs_pay_info()
 
 
 #payresult_to_china()

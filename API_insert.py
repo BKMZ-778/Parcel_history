@@ -54,11 +54,49 @@ def insert_event_API_chunks():
         #print(body)
         #print(body)
         # 127.0.0.1:5000 # 164.132.182.145
-        response = requests.post('http://164.132.182.145:5000/api/add/new_event_chanks', json=body, headers={'accept': 'application/json'})
+        response = requests.post('http://62.109.0.39:5000/api/add/new_event_chanks', json=body, headers={'accept': 'application/json'}) #'http://62.109.0.39:5000/api/add/new_event_chanks'
         print(response.text)
 
 
 def insert_event_API_chunks2():
+    file_name = filedialog.askopenfilename()
+    df = pd.read_excel(file_name)
+    print(df)
+    df.columns = ['regnumber', 'Номер общей накладной', 'parcel_numb',
+                  'Пломба', 'Вес брутто', 'custom_status', 'decision_date', 'refuse_reason', 'decision_code']
+    df = df[['regnumber', 'parcel_numb', 'custom_status', 'decision_date', 'refuse_reason', 'decision_code']]
+    df['refuse_reason'] = df['refuse_reason'].fillna('')
+    df['decision_date'] = pd.to_datetime(df['decision_date'], format='%d.%m.%Y %H:%M')
+    df['decision_date'] = df['decision_date'].dt.strftime("%Y-%m-%d %H:%M:%S")
+    df['decision_code'] = df['decision_code'].fillna('')
+    print(df['decision_date'])
+    parcel_list = []
+    for index, row in df.iterrows():
+        (regnumber, parcel_numb, custom_status, decision_date, refuse_reason, decision_code) = row
+        parcel_info = {"regnumber": regnumber, "parcel_numb": parcel_numb,
+                       "Event": custom_status, "Event_comment": refuse_reason,
+                       "Event_date": decision_date, "decision_code": decision_code}
+        parcel_list.append(parcel_info)
+    list_chunks = list(chunks(parcel_list, 2000))
+    print(list_chunks)
+    i = 0
+    for chunk in list_chunks:
+        start = time.time()
+        i += 1
+        print(f'chunk {i}')
+        #print(chunk)
+        # 127.0.0.1:5000 # 164.132.182.145:5000
+        response = requests.post('http://62.109.0.39:5000/api/add/new_event_chunks2', json=chunk, headers={'accept':'application/json'})  #'http://62.109.0.39:5000/api/add/new_event_chunks2'
+        print(response.text)
+        end = time.time()
+        print("The time of execution of above program is :",
+              (end - start), "s")
+    msg = "ЗАГРУЖЕНО!"
+    mb.showinfo("Информация", msg)
+
+#insert_event_API_chunks2()
+
+def insert_event_API_chunks2_local():
     file_name = filedialog.askopenfilename()
     df = pd.read_excel(file_name)
     print(df)
@@ -86,7 +124,8 @@ def insert_event_API_chunks2():
         print(f'chunk {i}')
         #print(chunk)
         # 127.0.0.1:5000 # 164.132.182.145:5000
-        response = requests.post('http://164.132.182.145:5000/api/add/new_event_chunks2', json=chunk, headers={'accept': 'application/json'})
+        host = entry_host.get()
+        response = requests.post(f'http://{host}:5000/api/add/new_event_chunks2', json=chunk, headers={'accept':'application/json'})
         print(response.text)
         end = time.time()
         print("The time of execution of above program is :",
@@ -94,11 +133,9 @@ def insert_event_API_chunks2():
     msg = "ЗАГРУЖЕНО!"
     mb.showinfo("Информация", msg)
 
-#insert_event_API_chunks2()
-
-
 login = 'sl_api'
 password = 'v3wMuaEeV64'
+
 
 def authorization():
     url = 'https://mdt-express.deklarant.ru/api/Account/Login_V2'
@@ -123,7 +160,7 @@ def Monitoring_events_toxl():
     map_status = {'10': 'Выпуск товаров без уплаты таможенных платежей',
                          '30': 'Выпуск возвращаемых товаров разрешен',
                         '31': 'требуется уплата таможенных платежей',
-                         '32': 'Выпуск товаров разрешен, таможенные платежи уплачsены',
+                         '32': 'Выпуск товаров разрешен, таможенные платежи уплачены',
                          '33': 'Выпуск разрешён, ожидание по временному ввозу',
                       '40': 'разрешение на отзыв',
                       '70': 'продление срока выпуска',
@@ -149,7 +186,7 @@ def Monitoring_events_toxl():
     list_chunks = list(chunks(parcel_list, 3000))
     df_result_all = pd.DataFrame()
     for chunk in list_chunks:
-        # try:
+        try:
             print(len(chunk))
             print()
             response = requests.post(url=url, headers=headers, json=chunk)
@@ -180,8 +217,9 @@ def Monitoring_events_toxl():
             df_result = df_result[['Рег. номер', 'Номер общей накладной', 'Трек-номер', 'Вес брутто', 'Пломба'
                                    , 'Статус ТО', 'Дата решения', 'Причина отказа ТО', 'Код причины отказа']]
             df_result_all = df_result_all.append(df_result)
-        # except Exception as e:
-        #     print(e)
+            print(df_result)
+        except Exception as e:
+             print(e)
     df_result_all = df_result_all.dropna(axis=0, how='any', subset='Статус ТО', inplace=False)
     writer = pd.ExcelWriter(f'{filename} - РЕШЕНИЯ.xlsx', engine='xlsxwriter')
     df_result_all.to_excel(writer, sheet_name='Sheet1', index=False)
@@ -190,19 +228,56 @@ def Monitoring_events_toxl():
     msg = "ВЫГРУЖЕНО!"
     mb.showinfo("Информация", msg)
 
+
+def check_pay_ozon():
+    file_name = filedialog.askopenfilename()
+    df = pd.read_excel(file_name)
+    print(df)
+    df = df.loc[df['Статус ТО'] == 'Выпуск товаров разрешен, таможенные платежи уплачены']
+    parcel_list = df['Трек-номер'].tolist()
+    list_chunks = list(chunks(parcel_list, 500))
+    df_loaded_all = pd.DataFrame()
+    for chunk in list_chunks:
+        url = 'http://62.109.0.39:5000/api/get_ozon_pay_info'
+        response = requests.post(url=url, json=chunk)
+        result_json = response.json()
+        print(response.status_code)
+        print(result_json)
+        df_loaded = pd.DataFrame.from_records(result_json)
+        df_loaded = df_loaded.loc[df_loaded['ozone_response_status_code'] == 200]
+        print(df_loaded)
+        df_loaded_all = df_loaded_all.append(df_loaded)
+    df = pd.merge(df, df_loaded_all, how='left', left_on='Трек-номер', right_on='TrackingNumber')
+    writer = pd.ExcelWriter(f'{file_name} Ozon Pay info.xlsx', engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1', index=False)
+    writer.close()
+    df_not_sended = df.loc[df['ozone_response_text'].isnull()]
+
+    writer = pd.ExcelWriter(f'{file_name} Pay NOT SENDED.xlsx', engine='xlsxwriter')
+    df_not_sended.to_excel(writer, sheet_name='Sheet1', index=False)
+    writer.close()
+
+
+#check_pay_ozon()
+
 window = tk.Tk()
 window.title('Выгрузка и загрузка решений')
 window.geometry("500x250+400+400")
 name = tk.Label(window, text="Из мониторинга")
+a = tk.StringVar(value='192.168.0.100')
+entry_host = tk.Entry(window, width=20, textvariable=a)
 
 button = tk.Button(text="Выгрузить решения с Мониторинга", width=40, height=2, bg="lightgrey", fg="black", command=Monitoring_events_toxl)
 button.configure(font=('hank', 10))
 button2 = tk.Button(text="Загрузить решения на сервер", width=40, height=2, bg="lightgrey", fg="black", command=insert_event_API_chunks2)
 button2.configure(font=('hank', 10))
-
+button3 = tk.Button(text="Загрузить решения локально", width=40, height=2, bg="lightgrey", fg="black", command=insert_event_API_chunks2_local)
+button3.configure(font=('hank', 10))
 name.pack()
 button.pack()
 button2.pack()
+entry_host.pack()
+button3.pack()
 window.mainloop()
 
 
